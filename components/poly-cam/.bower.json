@@ -1,0 +1,42 @@
+{
+  "name": "poly-cam",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed",
+    "web-components",
+    "webcam",
+    "web-cam",
+    "camera",
+    "video",
+    "audio"
+  ],
+  "main": "poly-cam.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "_release": "de04157cc9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "de04157cc9915e92722d8b61f0632a69be799fa4"
+  },
+  "_source": "git://github.com/vision89/poly-cam.git",
+  "_target": "master",
+  "_originalSource": "vision89/poly-cam",
+  "_direct": true
+}
