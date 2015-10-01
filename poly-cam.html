@@ -1,0 +1,214 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+<!--
+Provides access to the web-cam
+
+Example:
+
+    <poly-cam></poly-cam>
+
+@group Seed Elements
+@element poly-cam
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="poly-cam">
+
+  <template>
+    <style>
+    
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+      
+      .error {
+        
+        color: rgb(233, 74, 47);
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5em;
+         @apply(--poly-cam-error-theme);
+        
+      }
+  
+    </style>
+    
+    <video id="poly-video" autoplay></video>
+    
+    <div class="error" hidden$="[[!_showErrorMessage]]">I'm sorry, this browser is not supported</div>
+
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'poly-cam',
+
+    properties: {
+      
+      /**
+       * Will this include audio?
+       */ 
+      useAudio: {
+        
+        type: Boolean,
+        value: true,
+        notify: false
+        
+      },
+      
+      /**
+       * Will this include video?
+       */ 
+      useVideo: {
+        
+        type: Boolean,
+        value: true,
+        notify: false
+        
+      },
+      
+      /**
+       * Send in specific audio/video constraints
+       */ 
+      constraints: {
+        
+        type: Object,
+        value: null,
+        notify: false
+        
+      },
+      
+      /**
+       * True if the browser is not supported
+       */ 
+      _showErrorMessage: {
+        
+        type: Boolean,
+        value: false,
+        notify: false
+        
+      },
+      
+      /**
+       * Reference to the stream
+       */ 
+      _stream: {
+        
+        type: Object,
+        value: null,
+        notify: false
+        
+      }
+
+    },
+    
+    /**
+     * Start recording
+     */ 
+    record: function () {
+      
+      if ( navigator.getUserMedia ) {
+        
+        var video = document.querySelector( '#poly-video' );
+        
+        var constraints = this.constraints || { audio: this.useAudio, video: this.useVideo };
+        
+        var that = this;
+        
+        function success ( stream ) {
+          
+          that._stream = stream;
+          video.src = window.URL.createObjectURL( stream );
+          
+        };
+        
+        function error () {
+          
+          this._showErrorMessage = true;
+          
+        }
+        
+        navigator.getUserMedia( constraints, success, error );
+        
+      } else {
+        
+        this._showErrorMessage = true;
+        
+      }
+      
+    },
+    
+    /**
+     * Stop recording
+     */ 
+    stop: function () {
+      
+      if ( this._stream && this._stream.active ) {
+        
+        var tracks = this._stream.getTracks();
+        
+        for ( var i = 0; i < tracks.length; ++i ) {
+          
+          tracks[i].stop();
+          
+        }
+        
+      }
+      
+    },
+    
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+      
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                        navigator.mozGetUserMedia || navigator.msGetUserMEdia;
+                        
+
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+      
+      
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+      this._stop();
+      this._stream = null;
+      this._showErrorMessage = false;
+      
+    }
+
+  });
+
+</script>
